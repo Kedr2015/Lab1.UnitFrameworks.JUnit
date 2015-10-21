@@ -42,7 +42,7 @@ public class SaveFilesToDiskTest {
 	this.testSubject = testSubject;
 	this.testCount = testCount;
     }
-    
+
     /**
      * Input parameters for the test
      * 
@@ -50,7 +50,8 @@ public class SaveFilesToDiskTest {
      */
     @Parameters
     public static List<Object[]> isEmptyData() {
-	return Arrays.asList(new Object[][] { { "giraffe", 3 }//, { "Buffalo", 3 }
+	return Arrays.asList(new Object[][] { { "giraffe", 3 }// , { "Buffalo",
+							      // 3 }
 
 	});
     }
@@ -67,7 +68,6 @@ public class SaveFilesToDiskTest {
 		dirDel.delete();
 	    }
     }
-
 
     /**
      * Check the names of the stored files from search results
