@@ -73,7 +73,7 @@ public class SaveFilesToDiskTest {
      * Check the names of the stored files from search results
      */
     @Test
-    public void TestNamesSavedImage() {
+    public void NamesSavedImageTest() {
 	System.out.println("The test TestNamesSavedImage starts... ");
 	int counter = 0;
 	name.saveFilesToDisk(testSubject, testCount);
