@@ -95,7 +95,7 @@ public class SaveFilesToDiskTest {
      * 
      */
     @Test
-    public void TestCountSavedImage() {
+    public void CountSavedImageTest() {
 	System.out.println("The test TestCountSavedImage starts... ");
 	name.saveFilesToDisk(testSubject, testCount);
 	System.out.println("There is the same number of check downloaded files: " + file.listFiles().length
