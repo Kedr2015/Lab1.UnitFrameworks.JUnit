@@ -3,7 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/Unit Frameworks. JUnit_SearchEngine.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/UnitFrameworks.JUnit.Lab1/lib/Unit%20Frameworks.%20JUnit_SearchEngine.jar!/doc"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/Lab1.UnitFrameworks.JUnit/lib/Unit%20Frameworks.%20JUnit_SearchEngine.jar!/doc"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

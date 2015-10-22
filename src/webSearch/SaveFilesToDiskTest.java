@@ -1,4 +1,4 @@
-package epam.varchenko.nikita.webSearch;
+package webSearch;
 
 import static org.junit.Assert.*;
 
@@ -49,16 +49,13 @@ public class SaveFilesToDiskTest {
      */
     @Parameters
     public static List<Object[]> isEmptyData() {
-	return Arrays.asList(new Object[][] { { "giraffe", 3 }// , { "Buffalo",
-							      // 3 }
+	return Arrays.asList(new Object[][] { { "giraffe", 3 }, { "Buffalo", 4 }
 
 	});
     }
 
     /**
-     * Cleaning Search Folders
-     * 
-     * @return List Object
+     * Clears folders, before running the test
      */
     @Before
     public void DelFiles() {
@@ -72,21 +69,28 @@ public class SaveFilesToDiskTest {
      * Check the names of the stored files from search results
      */
     @Test
-    public void NamesSavedImageTest() {
-	System.out.println("The test TestNamesSavedImage starts... ");
+    public void NamesSavedWebTest() {
+	System.out.println("The test NamesSavedImageTest starts... ");
 	int counter = 0;
-	name.saveFilesToDisk(testSubject, testCount);
-	for (String item : name.getLinksList(testSubject, testCount)) {
-	    for (File nameFile : file.listFiles()) {
-		if (item.indexOf(nameFile.getName()) >= 1) {
-		    counter++;
+	try {
+	    name.saveFilesToDisk(testSubject, testCount);
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error when performing the method saveFilesToDisk");
+	}
+	try {
+	    for (String item : name.getLinksList(testSubject, testCount)) {
+		for (File nameFile : file.listFiles()) {
+		    if (item.indexOf(nameFile.getName()) >= 1) {
+			counter++;
+		    }
 		}
 	    }
+	} catch (ArithmeticException e) {
+	    fail("Fatal error when performing the method getLinksList");
 	}
-	assertTrue("The number of files in the directory are not the same search results", counter == testCount);
-	System.out.println("Test finished");
-	System.out.println("There is a clean folder storage");
-	System.out.println("");
+	assertTrue("Test fails finished.\nThe number of files in the directory " + counter
+		+ ", are not the same search results " + testCount, counter == testCount);
+	System.out.println("Test successfully finished.\n");
     }
 
     /**
@@ -94,32 +98,36 @@ public class SaveFilesToDiskTest {
      * 
      */
     @Test
-    public void CountSavedImageTest() {
-	System.out.println("The test TestCountSavedImage starts... ");
-	name.saveFilesToDisk(testSubject, testCount);
+    public void CountSavedWebTest() {
+	System.out.println("The test CountSavedImageTest starts... ");
+	try {
+	    name.saveFilesToDisk(testSubject, testCount);
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error when performing the method saveFilesToDisk");
+	}
 	System.out.println("There is the same number of check downloaded files: " + file.listFiles().length
 		+ ", with initial data: " + testCount);
-	assertTrue("The number of files in the directory are not the same search results",
+	assertTrue("Test fails finished.\nThe number of files in the directory are not the same search results",
 		file.listFiles().length == testCount);
-	System.out.println("Test finished");
-	System.out.println("There is a clean folder storage");
-	System.out.println("");
+	System.out.println("Test successfully finished.\n");
     }
 
     /**
      * Check the query with zero results
      */
     @Test
-    public void TestZeroSavedImage() {
+    public void TestZeroSavedWeb() {
 	System.out.println("The test TestZeroSavedImage starts... ");
-	name.saveFilesToDisk(testSubject, 0);
+	try {
+	    name.saveFilesToDisk(testSubject, 0);
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error when performing the method saveFilesToDisk");
+	}
 	System.out.println("There is the same number of check downloaded files: " + file.listFiles().length
 		+ ", with initial data: 0");
-	assertTrue("The number of files in the directory are not the same search results",
+	assertTrue("Test fails finished.\nThe number of files in the directory are not the same search results",
 		file.listFiles().length == 0);
-	System.out.println("Test finished");
-	System.out.println("There is a clean folder storage");
-	System.out.println("");
+	System.out.println("Test successfully finished.\n");
     }
 
 }
