@@ -3,17 +3,15 @@ package imageSearch;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.epam.searcher.googlesearch.*;
-
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * The class is used to test the method getLinksList search image Search
@@ -21,159 +19,73 @@ import org.junit.runner.RunWith;
  * @author Nikita_Varchenko
  *
  */
-@RunWith(Theories.class)
+@RunWith(Parameterized.class)
 public class GetLinksListImageSearchTest {
 
-    /**
-     * Parameter tests
-     * 
-     */
-    @DataPoints
-    public static Object[][] testData = new Object[][] { { "giraffe", 4 }, { "Buffalo", 3 } };
-
-    List<String> supplierNames = new ArrayList<String>();
+    private final String nameObjectSearch;// Object search
+    private final int numberResultsSearch;// Number of results
+    List<String> gettingLinks = new ArrayList<String>();
     ImageSearch name = new ImageSearch();
     public String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
     Pattern patt = Pattern.compile(regex);
 
     /**
+     * Constructor initialization parameter tests
+     * 
+     * @param testSubject
+     *            - Object search
+     * @param testCount
+     *            - Number of results
+     */
+    public GetLinksListImageSearchTest(final String nameObjectSearch, final int numberResultsSearch) {
+	this.nameObjectSearch = nameObjectSearch;
+	this.numberResultsSearch = numberResultsSearch;
+    }
+
+    /**
+     * Input parameters for the test
+     * 
+     * @return List Object
+     */
+    @Parameters
+    public static List<Object[]> isEmptyData() {
+	return Arrays.asList(new Object[][] { { "giraffe", 8 }, { "Buffalo", 3 }, { "Buffalo", 0 }, { "", 0 },
+		{ "", 1 }, { " ", 0 }, { "Buffalo", 9 } });
+    }
+
+    /**
      * Checking the number of search results
      */
-    @Theory
-    public void checkImageListTest(final Object... testData) {
-	System.out.println("The test checkListTest starts... ");
+    @Test
+    public void checkWebListTest() {
+	System.out.println("Starting with the checkWebListTest of the test parameters:\nSearch for \""
+		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
 	try {
-	    supplierNames = name.getLinksList((String) testData[0], (Integer) testData[1]);
+	    gettingLinks = name.getLinksList(nameObjectSearch, numberResultsSearch);
 	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
+	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
 	}
-	System.out.println("Number of expected results " + (Integer) testData[1]);
-	assertTrue("Test fails finished.\nThe list does not contain the right amount of links: " + (Integer) testData[1]
-		+ " instead " + supplierNames.size(), supplierNames.size() == (Integer) testData[1]);
-	System.out.println("Test successfully finished.\n");
-    }
+	if ((numberResultsSearch <= 8) && (nameObjectSearch != "") && (numberResultsSearch > 0)
+		&& (nameObjectSearch != " ")) {
+	    assertEquals(
+		    "Test fails finished.\nList query " + nameObjectSearch
+			    + " does not contain the required number of links: ",
+		    gettingLinks.size(), numberResultsSearch);
+	    System.out.println("Check the format strings search result...");
+	    for (String linksSearch : gettingLinks) {
+		Matcher matcher = patt.matcher(linksSearch);
+		assertTrue("Test fails finished.\nList of requests: " + nameObjectSearch
+			+ " It does not contain the results in the form of links: " + linksSearch, matcher.matches());
+	    }
 
-    /**
-     * Checking the name of search results
-     */
-    @Theory
-    public void checkImageReferencesTextTest(final Object... testData) {
-	System.out.println("The test checkReferencesTextTest starts... ");
-	try {
-	    supplierNames = name.getLinksList((String) testData[0], (int) testData[1]);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
+	} else {
+	    assertEquals("Test fails finished.\nList query " + nameObjectSearch
+		    + " does not contain the required number of links: ", gettingLinks.size(), 0);
 	}
-	for (String item : supplierNames) {
-	    Matcher matcher = patt.matcher(item);
-	    System.out.println("Check the format string " + item);
-	    assertTrue("Test fails finished.\nThe list contains no links: " + item, matcher.matches());
-	}
-	System.out.println("Test successfully finished.\n");
-    }
 
-    /**
-     * Check with zero search results
-     */
-    @Theory
-    public void checkImageListQueryEmptyTest(final Object... testData) {
-	System.out.println("The test checkListQueryEmptyTest starts... ");
-	try {
-	    supplierNames = name.getLinksList((String) testData[0], 0);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	System.out.println("Check the result on the absence of references");
-	assertTrue("Test fails finished.\nThe list contains links", supplierNames.size() == 0);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Check with zero search results
-     */
-    @Theory
-    public void checkImageListQueryZeroTest() {
-	System.out.println("The test checkListQueryZeroTest starts... ");
-	try {
-	    supplierNames = name.getLinksList("", 0);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	System.out.println("Check the result on the absence of references");
-	assertTrue("Test fails finished.\nThe list contains links", supplierNames.size() == 0);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Check with a blank search results
-     */
-    @Theory
-    public void checkImageListQueryGap() {
-	System.out.println("The test checkListQueryGap starts... ");
-	try {
-	    supplierNames = name.getLinksList(" ", 0);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	System.out.println("Check the result on the absence of references");
-	assertTrue("Test fails finished.\nThe list contains links", supplierNames.size() == 0);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Checking the extreme number of search results
-     */
-    @Theory
-    public void checkImageListQueryMaxTest(final Object... testData) {
-	System.out.println("The test checkListQueryMaxTest starts... ");
-	try {
-	    supplierNames = name.getLinksList((String) testData[0], 8);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	System.out.println("Check the result on the absence of references");
-	assertTrue("Test fails finished.\nThe list contains 8 links", supplierNames.size() == 8);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Check the number of overflows search results
-     */
-    @Theory
-    public void checkImageListQueryZeroingTest() {
-	System.out.println("The test checkListQueryZeroingTest starts... ");
-	try {
-	    supplierNames = name.getLinksList(" ", 9);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	System.out.println("Check the result on the absence of references");
-	assertTrue("Test fails finished.\nThe list contains links", supplierNames.size() == 0);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Checking exception when receiving the input: Number of results
-     */
-    @Theory
-    @Test(expected = IllegalArgumentException.class)
-    public void checkImageListSizeNullTest(final Object... testData) {
 	System.out.println(
-		"The test checkListSizeNull starts...\nChecking exclusion if during the test will be the exclusion of its work completed successfully ");
-	name.getLinksList((String) testData[0], null);
-	System.out.println("Test fails finished.\n");
-    }
-
-    /**
-     * Checking exception when receiving the input: Object search
-     */
-    @Theory
-    @Test(expected = IllegalArgumentException.class)
-    public void checkImageListInquiryNullTest() {
-	System.out.println(
-		"The test checkListInquiryNull starts...\nChecking exclusion if during the test will be the exclusion of its work completed successfully ");
-	name.getLinksList(null, 3);
-	System.out.println("Test fails finished.\n");
+		"The results of the method correspond to the input parameters.\nTest successfully finished.\n");
     }
 
 }

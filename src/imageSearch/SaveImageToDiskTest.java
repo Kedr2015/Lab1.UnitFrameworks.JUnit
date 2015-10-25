@@ -24,8 +24,8 @@ import com.epam.searcher.googlesearch.ImageSearch;
 public class SaveImageToDiskTest {
 
     private static final String Parh = "C:\\temp\\img\\";// Path file storage
-    private final String testSubject;// Object search
-    private final int testCount;// Number of results
+    private final String nameObjectSearch;// Object search
+    private final int numberResultsSearch;// Number of results
     ImageSearch name = new ImageSearch();
     File file = new File(Parh);
 
@@ -49,8 +49,8 @@ public class SaveImageToDiskTest {
      *            - Number of results
      */
     public SaveImageToDiskTest(final String testSubject, final int testCount) {
-	this.testSubject = testSubject;
-	this.testCount = testCount;
+	this.nameObjectSearch = testSubject;
+	this.numberResultsSearch = testCount;
     }
 
     /**
@@ -60,71 +60,40 @@ public class SaveImageToDiskTest {
      */
     @Parameters
     public static List<Object[]> isEmptyData() {
-	return Arrays.asList(new Object[][] { { "Slon", 4 }, { "Buffalo", 3 } });
+	return Arrays.asList(new Object[][] { { "giraffe", 8 }, { "Buffalo", 3 }, { "Buffalo", 0 }, { "", 0 },
+		{ "", 1 }, { " ", 0 }, { "Buffalo", 9 } });
     }
 
     /**
      * Check the names of the stored files from search results
      */
     @Test
-    public void NamesSavedImageTest() {
-	System.out.println("The test NamesSavedImageTest starts... ");
-	int counter = 0;
+    public void namesSavedImageTest() {
+	System.out.println("Starting with the NamesSavedImageTest of the test parameters:\nSearch for \""
+		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
+	int numberFilesInDirectory = 0;
 	try {
-	    name.saveFilesToDisk(testSubject, testCount);
+	    name.saveFilesToDisk(nameObjectSearch, numberResultsSearch);
 	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method saveFilesToDisk");
+	    fail("Fatal error method saveFilesToDisk\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
 	}
 	try {
-	    for (String item : name.getLinksList(testSubject, testCount)) {
-		for (File nameFile : file.listFiles()) {
-		    if (item.indexOf(nameFile.getName()) >= 1) {
-			counter++;
+	    for (String item : name.getLinksList(nameObjectSearch, numberResultsSearch)) {
+		for (File nameFileInDirectory : file.listFiles()) {
+		    if (item.indexOf(nameFileInDirectory.getName()) >= 1) {
+			numberFilesInDirectory++;
 		    }
 		}
 	    }
-	} catch (ArithmeticException e) {
-	    fail("Fatal error when performing the method getLinksList");
-	}
-	assertTrue("Test fails finished.\nThe number of files in the directory " + counter
-		+ ", are not the same search results " + testCount, counter == testCount);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * The test checks the number of files in the folder search
-     * 
-     */
-    @Test
-    public void CountSavedImageTest() {
-	System.out.println("The test CountSavedImageTest starts... ");
-	try {
-	    name.saveFilesToDisk(testSubject, testCount);
 	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method saveFilesToDisk");
+	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
 	}
-	System.out.println("There is the same number of check downloaded files: " + file.listFiles().length
-		+ ", with initial data: " + testCount);
-	assertTrue("Test fails finished.\nThe number of files in the directory are not the same search results",
-		file.listFiles().length == testCount);
-	System.out.println("Test successfully finished.\n");
-    }
-
-    /**
-     * Check the query with zero results
-     */
-    @Test
-    public void ZeroSavedImageTest() {
-	System.out.println("The test TestZeroSavedImage starts... ");
-	try {
-	    name.saveFilesToDisk(testSubject, 0);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error when performing the method saveFilesToDisk");
-	}
-	System.out.println("There is the same number of check downloaded files: " + file.listFiles().length
-		+ ", with initial data: 0");
-	assertTrue("Test fails finished.\nThe number of files in the directory are not the same search results",
-		file.listFiles().length == 0);
+	assertEquals("Test fails finished.\nThe number of files in the directory are not the same search results ",
+		file.listFiles().length, numberResultsSearch);
+	assertEquals("Test fails finished.\nIn the catalog, not all the files " + numberResultsSearch,
+		numberFilesInDirectory, numberResultsSearch);
 	System.out.println("Test successfully finished.\n");
     }
 
