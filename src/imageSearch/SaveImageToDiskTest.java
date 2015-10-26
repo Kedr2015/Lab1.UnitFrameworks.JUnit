@@ -23,6 +23,7 @@ import com.epam.searcher.googlesearch.ImageSearch;
 @RunWith(Parameterized.class)
 public class SaveImageToDiskTest {
 
+    private int numberFilesInDirectory = 0;
     private static final String Parh = "C:\\temp\\img\\";// Path file storage
     private final String nameObjectSearch;// Object search
     private final int numberResultsSearch;// Number of results
@@ -38,6 +39,25 @@ public class SaveImageToDiskTest {
 	    if (dirDel.isFile()) {
 		dirDel.delete();
 	    }
+	try {
+	    name.saveFilesToDisk(nameObjectSearch, numberResultsSearch);
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error method saveFilesToDisk\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
+	}
+	try {
+	    for (String item : name.getLinksList(nameObjectSearch, numberResultsSearch)) {
+		for (File nameFileInDirectory : file.listFiles()) {
+		    if (item.indexOf(nameFileInDirectory.getName()) >= 1) {
+			numberFilesInDirectory++;
+		    }
+		}
+	    }
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
+	}
+
     }
 
     /**
@@ -65,35 +85,26 @@ public class SaveImageToDiskTest {
     }
 
     /**
-     * Check the names of the stored files from search results
+     * Check the names of the stored Image from search results
      */
     @Test
     public void namesSavedImageTest() {
-	System.out.println("Starting with the NamesSavedImageTest of the test parameters:\nSearch for \""
+	System.out.println("Starting with the namesSavedImageTest of the test parameters:\nSearch for \""
 		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
-	int numberFilesInDirectory = 0;
-	try {
-	    name.saveFilesToDisk(nameObjectSearch, numberResultsSearch);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error method saveFilesToDisk\nWith the following parameters:\nSearch for \"" + nameObjectSearch
-		    + "\"\nThe amount of " + numberResultsSearch);
-	}
-	try {
-	    for (String item : name.getLinksList(nameObjectSearch, numberResultsSearch)) {
-		for (File nameFileInDirectory : file.listFiles()) {
-		    if (item.indexOf(nameFileInDirectory.getName()) >= 1) {
-			numberFilesInDirectory++;
-		    }
-		}
-	    }
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
-		    + "\"\nThe amount of " + numberResultsSearch);
-	}
-	assertEquals("Test fails finished.\nThe number of files in the directory are not the same search results ",
-		file.listFiles().length, numberResultsSearch);
 	assertEquals("Test fails finished.\nIn the catalog, not all the files " + numberResultsSearch,
 		numberFilesInDirectory, numberResultsSearch);
+	System.out.println("Test successfully finished.\n");
+    }
+
+    /**
+     * Check the number of the stored Image from search results
+     */
+    @Test
+    public void amountSavedImageTest() {
+	System.out.println("Starting with the amountSavedImageTest of the test parameters:\nSearch for \""
+		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
+	assertEquals("Test fails finished.\nThe number of files in the directory     are not the same search results ",
+		file.listFiles().length, numberResultsSearch);
 	System.out.println("Test successfully finished.\n");
     }
 

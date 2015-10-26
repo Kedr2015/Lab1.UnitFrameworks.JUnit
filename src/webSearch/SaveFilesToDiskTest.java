@@ -23,6 +23,7 @@ import com.epam.searcher.googlesearch.WebSearch;
 @RunWith(Parameterized.class)
 public class SaveFilesToDiskTest {
 
+    private int numberFilesInDirectory = 0;
     private static final String Parh = "C:\\temp\\web\\";// Path file storage
     private final String nameObjectSearch;// Object search
     private final int numberResultsSearch;// Number of results
@@ -38,6 +39,25 @@ public class SaveFilesToDiskTest {
 	    if (dirDel.isFile()) {
 		dirDel.delete();
 	    }
+	try {
+	    name.saveFilesToDisk(nameObjectSearch, numberResultsSearch);
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error method saveFilesToDisk\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
+	}
+	try {
+	    for (String item : name.getLinksList(nameObjectSearch, numberResultsSearch)) {
+		for (File nameFileInDirectory : file.listFiles()) {
+		    if (item.indexOf(nameFileInDirectory.getName()) >= 1) {
+			numberFilesInDirectory++;
+		    }
+		}
+	    }
+	} catch (IndexOutOfBoundsException e) {
+	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
+		    + "\"\nThe amount of " + numberResultsSearch);
+	}
+
     }
 
     /**
@@ -69,31 +89,23 @@ public class SaveFilesToDiskTest {
      */
     @Test
     public void namesSavedFilesTest() {
-	System.out.println("Starting with the NamesSavedImageTest of the test parameters:\nSearch for \""
+	System.out.println("Starting with the namesSavedFilesTest of the test parameters:\nSearch for \""
 		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
-	int numberFilesInDirectory = 0;
-	try {
-	    name.saveFilesToDisk(nameObjectSearch, numberResultsSearch);
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error method saveFilesToDisk\nWith the following parameters:\nSearch for \"" + nameObjectSearch
-		    + "\"\nThe amount of " + numberResultsSearch);
-	}
-	try {
-	    for (String item : name.getLinksList(nameObjectSearch, numberResultsSearch)) {
-		for (File nameFileInDirectory : file.listFiles()) {
-		    if (item.indexOf(nameFileInDirectory.getName()) >= 1) {
-			numberFilesInDirectory++;
-		    }
-		}
-	    }
-	} catch (IndexOutOfBoundsException e) {
-	    fail("Fatal error method getLinksList\nWith the following parameters:\nSearch for \"" + nameObjectSearch
-		    + "\"\nThe amount of " + numberResultsSearch);
-	}
-	assertEquals("Test fails finished.\nThe number of files in the directory are not the same search results ",
-		file.listFiles().length, numberResultsSearch);
 	assertEquals("Test fails finished.\nIn the catalog, not all the files " + numberResultsSearch,
 		numberFilesInDirectory, numberResultsSearch);
 	System.out.println("Test successfully finished.\n");
     }
+
+    /**
+     * Check the number of the stored files from search results
+     */
+    @Test
+    public void amountSavedFilesTest() {
+	System.out.println("Starting with the amountSavedFilesTest of the test parameters:\nSearch for \""
+		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
+	assertEquals("Test fails finished.\nThe number of files in the directory     are not the same search results ",
+		file.listFiles().length, numberResultsSearch);
+	System.out.println("Test successfully finished.\n");
+    }
+
 }

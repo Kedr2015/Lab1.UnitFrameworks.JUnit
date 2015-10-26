@@ -5,14 +5,14 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.epam.searcher.googlesearch.*;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import com.epam.searcher.googlesearch.WebSearch;
 
 /**
  * The class is used to test the method getLinksList search web Search
@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized.Parameters;
  *
  */
 @RunWith(Parameterized.class)
-public class GetLinksListWebSearchTest {
+public class GetLinksListWebSearchEmptyResultsTest {
 
     private final String nameObjectSearch;// Object search
     private final int numberResultsSearch;// Number of results
@@ -37,7 +37,7 @@ public class GetLinksListWebSearchTest {
      * @param testCount
      *            - Number of results
      */
-    public GetLinksListWebSearchTest(final String objectNameSearch, final int numberSearchResults) {
+    public GetLinksListWebSearchEmptyResultsTest(final String objectNameSearch, final int numberSearchResults) {
 	this.nameObjectSearch = objectNameSearch;
 	this.numberResultsSearch = numberSearchResults;
     }
@@ -49,7 +49,7 @@ public class GetLinksListWebSearchTest {
      */
     @Parameters
     public static List<Object[]> isEmptyData() {
-	return Arrays.asList(new Object[][] { { "giraffe", 8 }, { "Buffalo", 3 } });
+	return Arrays.asList(new Object[][] { { "Buffalo", 0 }, { "", 0 }, { "", 1 }, { " ", 0 }, { "Buffalo", 9 } });
     }
 
     @Before
@@ -63,14 +63,14 @@ public class GetLinksListWebSearchTest {
     }
 
     /**
-     * Checking the number of search results
+     * Checking the number of search empty results
      */
     @Test
-    public void checkWebListTest() {
-	System.out.println("Starting with the checkWebListTest of the test parameters:\nSearch for \""
+    public void checkWebListEmptyResultsTest() {
+	System.out.println("Starting with the checkWebListEmptyResultsTest of the test parameters:\nSearch for \""
 		+ nameObjectSearch + "\"\nThe amount of " + numberResultsSearch);
 	assertEquals("Test fails finished.\nList query " + nameObjectSearch
-		+ " does not contain the required number of links: ", gettingLinks.size(), numberResultsSearch);
+		+ " does not contain the required number of links: ", gettingLinks.size(), 0);
 	System.out.println(
 		"The results of the method correspond to the input parameters.\nTest successfully finished.\n");
     }
